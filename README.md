@@ -32,3 +32,6 @@ Cluster services are now available locally in the host machine browser:
 - http://localhost:18080 - history-node.
     - The history of jobs.
     - View logs and statistics on resources for each launch of the *Application* (*SparkSession*).
+- http://localhost:4040 - connect server
+  - Spark Web UI
+  - View information and details about the applications.

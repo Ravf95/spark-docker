@@ -3,6 +3,7 @@ services:
     container_name: spark-master
     build: .
     image: spark-image
+    pull_policy: never
     entrypoint: ['./entrypoint.sh', 'master']
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
@@ -16,15 +17,37 @@ services:
       - ./warehouse:/opt/spark/warehouse
     env_file:
       - .env.spark
+    networks:
+      - spark-net
     ports:
       - '8080:8080' # Spark master Web UI
       - '7077:7077' # For spark-node-to-spark-node queries
-      - '4040:4040' # Spark worker data
       - '8889:8889' # Optionaly - Jupyter web UI
+
+  spark-connect-server:
+    container_name: spark-connect-server
+    image: spark-image
+    pull_policy: never
+    entrypoint: ['./entrypoint.sh', 'connect']
+    env_file:
+      - .env.spark
+    ports:
+      - "15002:15002"
+      - '4040:4040'
+    depends_on:
+      - spark-master
+    volumes:
+      - ./scripts:/opt/spark/scripts
+      - ./data:/opt/spark/data
+      - ./spark-logs:/opt/spark/spark-events
+      - ./warehouse:/opt/spark/warehouse
+    networks:
+      - spark-net
 
   spark-history-server:
     container_name: spark-history
     image: spark-image
+    pull_policy: never
     entrypoint: ['./entrypoint.sh', 'history']
     depends_on:
       - spark-master
@@ -37,10 +60,13 @@ services:
       - ./warehouse:/opt/spark/warehouse
     ports:
       - '18080:18080'
+    networks:
+      - spark-net
 
   spark-worker:
     container_name: spark-worker
     image: spark-image
+    pull_policy: never
     entrypoint: ['./entrypoint.sh', 'worker']
     depends_on:
       - spark-master
@@ -51,6 +77,13 @@ services:
       - ./data:/opt/spark/data
       - ./spark-logs:/opt/spark/spark-events
       - ./warehouse:/opt/spark/warehouse
+    networks:
+      - spark-net
 
 volumes:
   spark-logs:
+
+networks:
+  spark-net:
+    driver: bridge
+    name: spark-net
