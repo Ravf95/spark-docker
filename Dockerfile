@@ -17,7 +17,7 @@ RUN apt-get update && \
 ## Download spark and hadoop dependencies and install
 
 # ENV variables
-ENV SPARK_VERSION=3.5.5
+ENV SPARK_VERSION=3.5.6
 
 ENV SPARK_HOME=${SPARK_HOME:-"/opt/spark"}
 ENV HADOOP_HOME=${HADOOP_HOME:-"/opt/hadoop"}
