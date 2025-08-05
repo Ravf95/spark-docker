@@ -9,7 +9,7 @@ then
   start-master.sh -p 7077
 elif [ "$SPARK_WORKLOAD" == "connect" ];
 then
-  start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.1
+  start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.6
 elif [[ $SPARK_WORKLOAD =~ "worker" ]];
 # if $SPARK_WORKLOAD contains substring "worker". try 
 # try "worker-1", "worker-2" etc.
